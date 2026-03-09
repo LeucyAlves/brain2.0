@@ -36,12 +36,10 @@ COPY --from=builder /app/public ./public
 # Copy data example files (used as defaults on first run)
 COPY --from=builder /app/data/*.example.json ./data/
 
-# better-sqlite3 needs the native binding
+# better-sqlite3 needs the native binding and its resolution helpers
 COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 COPY --from=builder /app/node_modules/bindings ./node_modules/bindings
 COPY --from=builder /app/node_modules/file-uri-to-path ./node_modules/file-uri-to-path
-COPY --from=builder /app/node_modules/prebuild-install ./node_modules/prebuild-install
-COPY --from=builder /app/node_modules/node-addon-api ./node_modules/node-addon-api
 
 # Data directory for SQLite DBs and JSON state
 RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data

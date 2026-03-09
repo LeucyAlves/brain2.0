@@ -80,7 +80,7 @@ The app uses `OPENCLAW_DIR` to locate `openclaw.json` and all workspaces. **No m
 
 ```bash
 cd /root/.openclaw/workspace   # or your OPENCLAW_DIR/workspace
-git clone https://github.com/carlosazaustre/tenacitOS.git mission-control
+git clone https://github.com/LeucyAlves/brain2.0.git mission-control
 cd mission-control
 npm install
 ```
@@ -201,7 +201,7 @@ Mission Control runs in its own Docker container, **completely isolated** from O
 
 ```bash
 # 1. Clone the repo on your server
-git clone <repo-url> /opt/mission-control
+git clone https://github.com/LeucyAlves/brain2.0.git /opt/mission-control
 cd /opt/mission-control
 
 # 2. Create your env file
