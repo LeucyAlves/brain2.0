@@ -160,7 +160,41 @@ Login at `http://localhost:3000` with the `ADMIN_PASSWORD` you set.
 
 ## Production Deployment
 
-### PM2 (recommended)
+### Docker (recommended)
+
+```bash
+# 1. Clone the repo on your server
+git clone https://github.com/carlosazaustre/tenacitOS.git mission-control
+cd mission-control
+
+# 2. Create your env file
+cp .env.example .env.local
+# Edit .env.local with your credentials (ADMIN_PASSWORD, AUTH_SECRET, etc.)
+
+# 3. Build and start
+docker compose up -d --build
+
+# 4. Check health
+docker compose logs -f mission-control
+curl http://localhost:3000/api/health
+```
+
+The `docker-compose.yml` mounts your OpenClaw directory as a read-only volume at `/openclaw`. The `OPENCLAW_DIR` env var is set automatically.
+
+To change the host port, set `MC_PORT` in `.env.local`:
+
+```env
+MC_PORT=4000
+```
+
+To update after pulling new code:
+
+```bash
+docker compose down
+docker compose up -d --build
+```
+
+### PM2
 
 ```bash
 npm run build
@@ -372,7 +406,7 @@ chmod +x scripts/*.sh
 
 | Layer | Tech |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | UI | React 19 + Tailwind CSS v4 |
 | 3D | React Three Fiber + Drei |
 | Charts | Recharts |

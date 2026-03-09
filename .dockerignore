@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env*
+!.env.example
+*.md
+docs/
+design/
+.DS_Store
+*.bak
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.json
+!data/*.example.json
