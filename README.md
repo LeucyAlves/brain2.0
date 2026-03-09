@@ -162,10 +162,47 @@ Login at `http://localhost:3000` with the `ADMIN_PASSWORD` you set.
 
 ### Docker (recommended)
 
+Mission Control runs in its own Docker container, **completely isolated** from OpenClaw. Deleting Mission Control does not affect OpenClaw, and vice-versa.
+
+#### Architecture (Hostinger VPS)
+
+```
+┌────────────────────────────┐     ┌────────────────────────────┐
+│  Container: OpenClaw       │     │  Container: Mission Control│
+│  Image: hvps-openclaw      │     │  Image: local build        │
+│  Port: 43452               │     │  Port: 3000                │
+│                            │     │                            │
+│  /data/.openclaw (rw)      │     │  /openclaw (READ-ONLY)     │
+│         ▲                  │     │         ▲                  │
+└─────────┼──────────────────┘     └─────────┼──────────────────┘
+          │              HOST                │
+          ├──────────────────────────────────┘
+          │
+  /docker/openclaw-rsuu/data/.openclaw   ← shared data on host
+```
+
+- OpenClaw owns the data and writes to it normally
+- Mission Control mounts it as **read-only** (`:ro`) — it can only read, never modify
+- Each container has its own volumes, network, and process
+- `docker rm mission-control` → **zero impact** on OpenClaw
+- `docker rm openclaw-*` → **zero impact** on Mission Control (it just loses data access)
+
+#### Host paths (Hostinger default)
+
+| What | Host path |
+|---|---|
+| OpenClaw data | `/docker/openclaw-rsuu/data/.openclaw` |
+| OpenClaw config | `/docker/openclaw-rsuu/data/.openclaw/openclaw.json` |
+| OpenClaw workspaces | `/docker/openclaw-rsuu/data/.openclaw/workspace*` |
+| Mission Control app | wherever you clone this repo (e.g. `/opt/mission-control`) |
+| Mission Control data | Docker volume `mc-data` (SQLite DBs + JSON state) |
+
+#### Quick start
+
 ```bash
 # 1. Clone the repo on your server
-git clone https://github.com/carlosazaustre/tenacitOS.git mission-control
-cd mission-control
+git clone <repo-url> /opt/mission-control
+cd /opt/mission-control
 
 # 2. Create your env file
 cp .env.example .env.local
@@ -179,17 +216,29 @@ docker compose logs -f mission-control
 curl http://localhost:3000/api/health
 ```
 
-The `docker-compose.yml` mounts your OpenClaw directory as a read-only volume at `/openclaw`. The `OPENCLAW_DIR` env var is set automatically.
+#### Environment variables
 
-To change the host port, set `MC_PORT` in `.env.local`:
+| Variable | Default | Description |
+|---|---|---|
+| `ADMIN_PASSWORD` | (required) | Dashboard login password |
+| `AUTH_SECRET` | (required) | Cookie signing secret (`openssl rand -base64 32`) |
+| `MC_PORT` | `3000` | Host port exposed by docker-compose |
+| `OPENCLAW_HOST_PATH` | `/docker/openclaw-rsuu/data/.openclaw` | Host path to OpenClaw data dir |
+| `OPENCLAW_DIR` | `/openclaw` | Path inside container (set by compose, don't change) |
+
+#### Custom OpenClaw path
+
+If your OpenClaw data is at a different path, set `OPENCLAW_HOST_PATH` in `.env.local`:
 
 ```env
-MC_PORT=4000
+OPENCLAW_HOST_PATH=/my/custom/path/.openclaw
 ```
 
-To update after pulling new code:
+#### Updating
 
 ```bash
+cd /opt/mission-control
+git pull
 docker compose down
 docker compose up -d --build
 ```

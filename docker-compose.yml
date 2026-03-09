@@ -14,7 +14,8 @@ services:
       # Persist SQLite databases and JSON state across restarts
       - mc-data:/app/data
       # Mount OpenClaw directory (read-only) so the app can read agents, sessions, etc.
-      - ${OPENCLAW_DIR:-/root/.openclaw}:/openclaw:ro
+      # Hostinger default: /docker/openclaw-rsuu/data/.openclaw
+      - ${OPENCLAW_HOST_PATH:-/docker/openclaw-rsuu/data/.openclaw}:/openclaw:ro
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
