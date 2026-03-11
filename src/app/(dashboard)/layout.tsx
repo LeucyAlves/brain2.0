@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { TopBar, StatusBar } from "@/components/TenacitOS";
+import { TopBar, StatusBar } from "@/components/HiveMind";
 
 const Dock = dynamic(
-  () => import("@/components/TenacitOS/Dock").then((mod) => ({ default: mod.Dock })),
+  () => import("@/components/HiveMind/Dock").then((mod) => ({ default: mod.Dock })),
   { ssr: false }
 );
 
@@ -14,7 +14,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="tenacios-shell" style={{ minHeight: "100vh" }}>
+    <div className="hivemind-shell" style={{ minHeight: "100vh" }}>
       <Dock />
       <TopBar />
 

@@ -64,7 +64,7 @@ function LoginForm() {
               letterSpacing: '-0.5px'
             }}
           >
-            Mission Control
+            Hive Mind
           </h1>
         </div>
         <p
@@ -137,7 +137,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 -ml-64"
+      className="min-h-screen flex items-center justify-center p-4"
       style={{ backgroundColor: 'var(--background)' }}
     >
       <div className="w-full max-w-md">
@@ -149,9 +149,9 @@ export default function LoginPage() {
               border: '1px solid var(--border)',
             }}
           >
-            <div className="h-8 bg-gray-700 rounded mb-4" />
-            <div className="h-12 bg-gray-700 rounded mb-4" />
-            <div className="h-10 bg-gray-700 rounded" />
+            <div className="h-8 rounded mb-4" style={{ backgroundColor: 'var(--surface-elevated)' }} />
+            <div className="h-12 rounded mb-4" style={{ backgroundColor: 'var(--surface-elevated)' }} />
+            <div className="h-10 rounded" style={{ backgroundColor: 'var(--surface-elevated)' }} />
           </div>
         }>
           <LoginForm />

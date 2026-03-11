@@ -24,30 +24,26 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 const statusConfig = {
   connected: {
     icon: CheckCircle,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/30",
+    color: 'var(--positive)',
+    bg: 'var(--positive-soft)',
     label: "Connected",
   },
   disconnected: {
     icon: XCircle,
-    color: "text-red-400",
-    bg: "bg-red-500/10",
-    border: "border-red-500/30",
+    color: 'var(--negative)',
+    bg: 'var(--negative-soft)',
     label: "Disconnected",
   },
   configured: {
     icon: CheckCircle,
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/30",
+    color: 'var(--info)',
+    bg: 'var(--info-soft)',
     label: "Configured",
   },
   not_configured: {
     icon: AlertCircle,
-    color: "text-yellow-400",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/30",
+    color: 'var(--warning)',
+    bg: 'var(--warning-soft)',
     label: "Not Configured",
   },
 };
@@ -55,21 +51,30 @@ const statusConfig = {
 export function IntegrationStatus({ integrations }: IntegrationStatusProps) {
   if (!integrations) {
     return (
-      <div className="bg-gray-900 rounded-xl p-6 animate-pulse">
-        <div className="h-6 bg-gray-800 rounded w-1/3 mb-4"></div>
+      <div
+        className="rounded-xl p-6 animate-pulse"
+        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+      >
+        <div className="h-6 rounded w-1/3 mb-4" style={{ backgroundColor: 'var(--surface-elevated)' }} />
         <div className="space-y-3">
-          <div className="h-16 bg-gray-800 rounded"></div>
-          <div className="h-16 bg-gray-800 rounded"></div>
-          <div className="h-16 bg-gray-800 rounded"></div>
+          <div className="h-16 rounded" style={{ backgroundColor: 'var(--surface-elevated)' }} />
+          <div className="h-16 rounded" style={{ backgroundColor: 'var(--surface-elevated)' }} />
+          <div className="h-16 rounded" style={{ backgroundColor: 'var(--surface-elevated)' }} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
-      <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-        <MessageCircle className="w-5 h-5 text-emerald-400" />
+    <div
+      className="rounded-xl p-6"
+      style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+    >
+      <h2
+        className="text-xl font-semibold mb-6 flex items-center gap-2"
+        style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}
+      >
+        <MessageCircle className="w-5 h-5" style={{ color: 'var(--accent)' }} />
         Integrations
       </h2>
 
@@ -82,16 +87,25 @@ export function IntegrationStatus({ integrations }: IntegrationStatusProps) {
           return (
             <div
               key={integration.id}
-              className={`flex items-center justify-between p-4 rounded-lg border ${status.bg} ${status.border}`}
+              className="flex items-center justify-between p-4 rounded-lg"
+              style={{
+                backgroundColor: status.bg,
+                border: `1px solid ${status.color}`,
+              }}
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-800 rounded-lg">
-                  <Icon className="w-5 h-5 text-gray-300" />
+                <div
+                  className="p-2 rounded-lg"
+                  style={{ backgroundColor: 'var(--surface-elevated)', color: 'var(--text-secondary)' }}
+                >
+                  <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-medium text-white">{integration.name}</div>
+                  <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {integration.name}
+                  </div>
                   {integration.lastActivity && (
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       Last activity:{" "}
                       {formatDistanceToNow(new Date(integration.lastActivity), {
                         addSuffix: true,
@@ -101,7 +115,7 @@ export function IntegrationStatus({ integrations }: IntegrationStatusProps) {
                 </div>
               </div>
 
-              <div className={`flex items-center gap-2 ${status.color}`}>
+              <div className="flex items-center gap-2" style={{ color: status.color }}>
                 <StatusIcon className="w-4 h-4" />
                 <span className="text-sm font-medium">{status.label}</span>
               </div>

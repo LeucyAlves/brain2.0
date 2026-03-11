@@ -6,8 +6,13 @@ export default function CalendarPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Calendar</h1>
-        <p className="text-gray-400">
+        <h1
+          className="text-3xl font-bold mb-2"
+          style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}
+        >
+          Calendar
+        </h1>
+        <p style={{ color: 'var(--text-secondary)' }}>
           Weekly view of scheduled tasks and cron jobs
         </p>
       </div>

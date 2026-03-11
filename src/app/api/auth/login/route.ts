@@ -85,7 +85,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { password } = await request.json();
+  let password: string;
+  try {
+    const body = await request.json();
+    password = body.password;
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
 
   if (password === process.env.ADMIN_PASSWORD) {
     clearAttempts(ip); // Reset on success
@@ -93,13 +102,11 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ success: true });
 
     // Set auth cookie (7 days expiry)
-    // secure=true only if it's HTTPS or not forced to be insecure
-    const isHttps = request.nextUrl.protocol === "https:";
-    const forceInsecure = process.env.AUTH_INSECURE === "true";
+    // secure=false for HTTP compatibility on VPS (requested by user)
 
     response.cookies.set("mc_auth", process.env.AUTH_SECRET!, {
       httpOnly: true,
-      secure: isHttps && !forceInsecure,
+      secure: false,
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",

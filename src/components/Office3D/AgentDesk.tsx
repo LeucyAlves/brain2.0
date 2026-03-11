@@ -12,7 +12,7 @@ import VoxelMacMini from './VoxelMacMini';
 
 interface AgentDeskProps {
   agent: AgentConfig;
-  state: AgentState;
+  state?: AgentState;
   onClick: () => void;
   isSelected: boolean;
 }

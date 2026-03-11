@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 /* ============================================
-   TenacitOS Design System
+   Hive Mind Design System
    Based on tenacios-design.json (Pencil)
    Updated: 2026-02-17
    ============================================ */
@@ -135,8 +135,10 @@ code, pre, .font-mono {
   overflow: hidden;
 }
 
-/* Smooth transitions */
-* {
+/* Smooth transitions — targeted to interactive elements only */
+a, button, input, select, textarea,
+.nav-item, .card, .badge, .btn-primary, .btn-outline, .btn-danger,
+.dock-item, .file-tree-item, .toggle-group button, .activity-item {
   transition-property: background-color, border-color, color, fill, stroke, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;

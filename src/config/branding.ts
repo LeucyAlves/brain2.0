@@ -1,13 +1,13 @@
 /**
- * Branding Configuration
+ * Configuração de Marca
  * 
- * Customize this file to match your instance's branding.
- * This keeps personal/instance-specific data out of the main codebase.
+ * Customize este arquivo para ajustar a identidade da sua instância.
+ * Isso mantém dados pessoais/específicos fora do código principal.
  */
 
 export const BRANDING = {
   // Main agent name and emoji
-  agentName: process.env.NEXT_PUBLIC_AGENT_NAME || "Mission Control",
+  agentName: process.env.NEXT_PUBLIC_AGENT_NAME || "Hive Mind",
   agentEmoji: process.env.NEXT_PUBLIC_AGENT_EMOJI || "🦞",
 
   // About page — agent identity
@@ -25,13 +25,23 @@ export const BRANDING = {
   twitterHandle: process.env.NEXT_PUBLIC_TWITTER_HANDLE || "@username",
 
   // Company/organization name (shown in office 3D view)
-  companyName: process.env.NEXT_PUBLIC_COMPANY_NAME || "MISSION CONTROL, INC.",
+  companyName: process.env.NEXT_PUBLIC_COMPANY_NAME || "HIVE MIND, INC.",
 
   // App title (shown in browser tab)
-  appTitle: process.env.NEXT_PUBLIC_APP_TITLE || "Mission Control",
+  appTitle: process.env.NEXT_PUBLIC_APP_TITLE || "Hive Mind",
 } as const;
 
 // Helper to get full agent display name
 export function getAgentDisplayName(): string {
   return `${BRANDING.agentName} ${BRANDING.agentEmoji}`;
+}
+
+// Helper to get the user display name (for TopBar etc.)
+export function getUserDisplayName(): string {
+  return BRANDING.ownerUsername;
+}
+
+// Helper to get the user initial (for avatar)
+export function getUserInitial(): string {
+  return BRANDING.ownerUsername.charAt(0).toUpperCase();
 }

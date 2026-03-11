@@ -41,17 +41,17 @@ export function ChangePasswordModal({
 
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError("All fields are required");
+      setError("Todos os campos são obrigatórios");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("New passwords do not match");
+      setError("As novas senhas não coincidem");
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("New password must be at least 6 characters");
+      setError("A nova senha deve ter pelo menos 6 caracteres");
       return;
     }
 
@@ -70,13 +70,13 @@ export function ChangePasswordModal({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to change password");
+        throw new Error(data.error || "Falha ao alterar a senha");
       }
 
       resetForm();
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to change password");
+      setError(err instanceof Error ? err.message : "Falha ao alterar a senha");
     } finally {
       setLoading(false);
     }
@@ -88,23 +88,36 @@ export function ChangePasswordModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
         onClick={handleClose}
       />
 
       {/* Modal */}
-      <div className="relative bg-gray-900 rounded-xl border border-gray-700 shadow-xl w-full max-w-md mx-4 p-6">
+      <div
+        className="relative rounded-xl shadow-xl w-full max-w-md mx-4 p-6"
+        style={{
+          backgroundColor: 'var(--surface)',
+          border: '1px solid var(--border)',
+        }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/10 rounded-lg">
-              <Key className="w-5 h-5 text-emerald-400" />
+            <div className="p-2 rounded-lg" style={{ backgroundColor: 'var(--positive-soft)' }}>
+              <Key className="w-5 h-5" style={{ color: 'var(--positive)' }} />
             </div>
-            <h2 className="text-xl font-semibold text-white">Change Password</h2>
+            <h2
+              className="text-xl font-semibold"
+              style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}
+            >
+              Alterar Senha
+            </h2>
           </div>
           <button
             onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
+            style={{ color: 'var(--text-muted)' }}
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,7 +125,14 @@ export function ChangePasswordModal({
 
         {/* Error */}
         {error && (
-          <div className="flex items-center gap-2 p-3 mb-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+          <div
+            className="flex items-center gap-2 p-3 mb-4 rounded-lg"
+            style={{
+              backgroundColor: 'var(--negative-soft)',
+              border: '1px solid var(--negative)',
+              color: 'var(--negative)',
+            }}
+          >
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span className="text-sm">{error}</span>
           </div>
@@ -122,21 +142,30 @@ export function ChangePasswordModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Current Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Current Password
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Senha Atual
             </label>
             <div className="relative">
               <input
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                placeholder="Enter current password"
+                className="w-full px-4 py-3 pr-12 rounded-lg focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--surface-elevated)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                placeholder="Digite a senha atual"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                style={{ color: 'var(--text-muted)' }}
               >
                 {showCurrent ? (
                   <EyeOff className="w-5 h-5" />
@@ -149,21 +178,30 @@ export function ChangePasswordModal({
 
           {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              New Password
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Nova Senha
             </label>
             <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                placeholder="Enter new password"
+                className="w-full px-4 py-3 pr-12 rounded-lg focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--surface-elevated)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                placeholder="Digite a nova senha"
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                style={{ color: 'var(--text-muted)' }}
               >
                 {showNew ? (
                   <EyeOff className="w-5 h-5" />
@@ -176,21 +214,30 @@ export function ChangePasswordModal({
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Confirm New Password
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Confirmar Nova Senha
             </label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                placeholder="Confirm new password"
+                className="w-full px-4 py-3 pr-12 rounded-lg focus:outline-none"
+                style={{
+                  backgroundColor: 'var(--surface-elevated)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                }}
+                placeholder="Confirme a nova senha"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                style={{ color: 'var(--text-muted)' }}
               >
                 {showConfirm ? (
                   <EyeOff className="w-5 h-5" />
@@ -206,22 +253,30 @@ export function ChangePasswordModal({
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-3 bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-700 transition-colors"
+              className="flex-1 px-4 py-3 rounded-lg font-medium transition-colors"
+              style={{
+                backgroundColor: 'var(--surface-elevated)',
+                color: 'var(--text-secondary)',
+              }}
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: 'white',
+              }}
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Updating...
+                  Atualizando...
                 </>
               ) : (
-                "Update Password"
+                "Atualizar Senha"
               )}
             </button>
           </div>

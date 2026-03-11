@@ -46,21 +46,37 @@ interface Agent {
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats>({ total: 0, today: 0, success: 0, error: 0, byType: {} });
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/activities/stats").then(r => r.json()),
-      fetch("/api/agents").then(r => r.json()),
-    ]).then(([actStats, agentsData]) => {
-      setStats({
-        total: actStats.total || 0,
-        today: actStats.today || 0,
-        success: actStats.byStatus?.success || 0,
-        error: actStats.byStatus?.error || 0,
-        byType: actStats.byType || {},
-      });
-      setAgents(agentsData.agents || []);
-    }).catch(console.error);
+    const errors: string[] = [];
+
+    fetch("/api/activities/stats")
+      .then(r => r.json())
+      .then((actStats) => {
+        setStats({
+          total: actStats.total || 0,
+          today: actStats.today || 0,
+          success: actStats.byStatus?.success || 0,
+          error: actStats.byStatus?.error || 0,
+          byType: actStats.byType || {},
+        });
+      })
+      .catch(() => errors.push("activities"));
+
+    fetch("/api/agents")
+      .then(r => r.json())
+      .then((agentsData) => {
+        setAgents(agentsData.agents || []);
+      })
+      .catch(() => errors.push("agents"));
+
+    // Show errors after a delay to allow both to resolve
+    setTimeout(() => {
+      if (errors.length > 0) {
+        setLoadError(`Failed to load: ${errors.join(", ")}`);
+      }
+    }, 3000);
   }, []);
 
   return (
@@ -75,7 +91,7 @@ export default function DashboardPage() {
             letterSpacing: '-1.5px'
           }}
         >
-          🦞 Mission Control
+          🦞 Hive Mind
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
           {t("Overview of Tenacitas agent activity")}

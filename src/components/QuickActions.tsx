@@ -20,7 +20,7 @@ interface ActionButton {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  color: "emerald" | "blue" | "yellow" | "red";
+  color: "positive" | "info" | "warning" | "negative";
   action: () => Promise<void> | void;
   placeholder?: boolean;
 }
@@ -40,7 +40,7 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
 
   const handleRestartGateway = async () => {
     // Placeholder - would call openclaw gateway restart
-    showNotification("success", "Gateway restart command sent (placeholder)");
+    showNotification("success", "Comando de reinício do gateway enviado (placeholder)");
   };
 
   const handleClearActivityLog = async () => {
@@ -54,10 +54,10 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
 
       if (!res.ok) throw new Error("Failed to clear log");
 
-      showNotification("success", "Activity log cleared successfully");
+      showNotification("success", "Log de atividades limpo com sucesso");
       onActionComplete?.();
     } catch {
-      showNotification("error", "Failed to clear activity log");
+      showNotification("error", "Falha ao limpar log de atividades");
     } finally {
       setLoadingAction(null);
     }
@@ -65,67 +65,72 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
 
   const handleViewLogs = async () => {
     // Placeholder - would open gateway logs
-    showNotification("success", "Opening gateway logs... (placeholder)");
+    showNotification("success", "Abrindo logs do gateway... (placeholder)");
   };
 
   const actions: ActionButton[] = [
     {
       id: "restart",
-      label: "Restart Gateway",
+      label: "Reiniciar Gateway",
       icon: RefreshCw,
-      color: "blue",
+      color: "info",
       action: handleRestartGateway,
       placeholder: true,
     },
     {
       id: "clear_log",
-      label: "Clear Activity Log",
+      label: "Limpar Log de Atividades",
       icon: Trash2,
-      color: "yellow",
+      color: "warning",
       action: handleClearActivityLog,
     },
     {
       id: "view_logs",
-      label: "View Gateway Logs",
+      label: "Ver Logs do Gateway",
       icon: FileText,
-      color: "emerald",
+      color: "positive",
       action: handleViewLogs,
       placeholder: true,
     },
     {
       id: "change_password",
-      label: "Change Password",
+      label: "Alterar Senha",
       icon: Key,
-      color: "red",
+      color: "negative",
       action: () => setShowPasswordModal(true),
     },
   ];
 
-  const colorClasses = {
-    emerald:
-      "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20",
-    blue: "bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20",
-    yellow:
-      "bg-yellow-500/10 text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/20",
-    red: "bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20",
+  const colorStyles: Record<string, { bg: string; color: string; border: string }> = {
+    positive: { bg: 'var(--positive-soft)', color: 'var(--positive)', border: 'var(--positive)' },
+    info: { bg: 'var(--info-soft)', color: 'var(--info)', border: 'var(--info)' },
+    warning: { bg: 'var(--warning-soft)', color: 'var(--warning)', border: 'var(--warning)' },
+    negative: { bg: 'var(--negative-soft)', color: 'var(--negative)', border: 'var(--negative)' },
   };
 
   return (
     <>
-      <div className="bg-gray-900 rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <RefreshCw className="w-5 h-5 text-emerald-400" />
-          Quick Actions
+      <div
+        className="rounded-xl p-6"
+        style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+      >
+        <h2
+          className="text-xl font-semibold mb-6 flex items-center gap-2"
+          style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}
+        >
+          <RefreshCw className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+          Ações Rápidas
         </h2>
 
         {/* Notification */}
         {notification && (
           <div
-            className={`flex items-center gap-2 p-3 rounded-lg mb-4 ${
-              notification.type === "success"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                : "bg-red-500/10 text-red-400 border border-red-500/30"
-            }`}
+            className="flex items-center gap-2 p-3 rounded-lg mb-4"
+            style={{
+              backgroundColor: notification.type === "success" ? 'var(--positive-soft)' : 'var(--negative-soft)',
+              color: notification.type === "success" ? 'var(--positive)' : 'var(--negative)',
+              border: `1px solid ${notification.type === "success" ? 'var(--positive)' : 'var(--negative)'}`,
+            }}
           >
             {notification.type === "success" ? (
               <CheckCircle className="w-4 h-4" />
@@ -140,15 +145,19 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
           {actions.map((action) => {
             const Icon = action.icon;
             const isLoading = loadingAction === action.id;
+            const cs = colorStyles[action.color];
 
             return (
               <button
                 key={action.id}
                 onClick={() => action.action()}
                 disabled={isLoading}
-                className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                  colorClasses[action.color]
-                }`}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: cs.bg,
+                  color: cs.color,
+                  border: `1px solid ${cs.border}`,
+                }}
               >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -169,7 +178,7 @@ export function QuickActions({ onActionComplete }: QuickActionsProps) {
         isOpen={showPasswordModal}
         onClose={() => setShowPasswordModal(false)}
         onSuccess={() => {
-          showNotification("success", "Password changed successfully");
+          showNotification("success", "Senha alterada com sucesso");
           setShowPasswordModal(false);
         }}
       />
