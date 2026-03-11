@@ -22,6 +22,7 @@ import {
   Terminal,
 } from "lucide-react";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 
 interface Stats {
   total: number;
@@ -66,9 +67,9 @@ export default function DashboardPage() {
     <div className="p-4 md:p-8">
       {/* Header */}
       <div className="mb-4 md:mb-6">
-        <h1 
+        <h1
           className="text-2xl md:text-3xl font-bold mb-1"
-          style={{ 
+          style={{
             fontFamily: 'var(--font-heading)',
             color: 'var(--text-primary)',
             letterSpacing: '-1.5px'
@@ -77,7 +78,7 @@ export default function DashboardPage() {
           🦞 Mission Control
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-          Overview of Tenacitas agent activity
+          {t("Overview of Tenacitas agent activity")}
         </p>
       </div>
 
@@ -86,25 +87,25 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatsCard
-            title="Total Activities"
+            title={t("Total Activities")}
             value={stats.total.toLocaleString()}
             icon={<Activity className="w-5 h-5" />}
             iconColor="var(--info)"
           />
           <StatsCard
-            title="Today"
+            title={t("Today")}
             value={stats.today.toLocaleString()}
             icon={<Zap className="w-5 h-5" />}
             iconColor="var(--accent)"
           />
           <StatsCard
-            title="Successful"
+            title={t("Successful")}
             value={stats.success.toLocaleString()}
             icon={<CheckCircle className="w-5 h-5" />}
             iconColor="var(--success)"
           />
           <StatsCard
-            title="Errors"
+            title={t("Errors")}
             value={stats.error.toLocaleString()}
             icon={<XCircle className="w-5 h-5" />}
             iconColor="var(--error)"
@@ -118,48 +119,48 @@ export default function DashboardPage() {
       </div>
 
       {/* Multi-Agent Status */}
-      <div 
+      <div
         className="mb-6 rounded-xl overflow-hidden"
         style={{
           backgroundColor: 'var(--card)',
           border: '1px solid var(--border)',
         }}
       >
-        <div 
+        <div
           className="flex items-center justify-between px-5 py-4"
           style={{ borderBottom: '1px solid var(--border)' }}
         >
           <div className="flex items-center gap-3">
             <div className="accent-line" />
-            <h2 
+            <h2
               className="text-base font-semibold"
-              style={{ 
+              style={{
                 fontFamily: 'var(--font-heading)',
                 color: 'var(--text-primary)'
               }}
             >
               <Users className="inline-block w-5 h-5 mr-2 mb-1" />
-              Multi-Agent System
+              {t("Multi-Agent System")}
             </h2>
           </div>
           <div className="flex gap-2">
             <Link
               href="/office"
               className="text-sm font-medium px-3 py-1.5 rounded-lg transition-all"
-              style={{ 
+              style={{
                 backgroundColor: 'var(--accent)',
                 color: 'var(--text-primary)',
               }}
             >
               <Gamepad2 className="inline-block w-4 h-4 mr-1 mb-0.5" />
-              Open Office
+              {t("Open Office")}
             </Link>
             <Link
               href="/agents"
               className="text-sm font-medium"
               style={{ color: 'var(--accent)' }}
             >
-              View all →
+              {t("View all →")}
             </Link>
           </div>
         </div>
@@ -185,16 +186,16 @@ export default function DashboardPage() {
                     }}
                   />
                 </div>
-                <div 
+                <div
                   className="text-sm font-bold mb-1"
-                  style={{ 
+                  style={{
                     fontFamily: 'var(--font-heading)',
                     color: 'var(--text-primary)',
                   }}
                 >
                   {agent.name}
                 </div>
-                <div 
+                <div
                   className="text-xs truncate mb-1"
                   style={{ color: 'var(--text-muted)' }}
                   title={agent.model}
@@ -203,12 +204,12 @@ export default function DashboardPage() {
                   {agent.model.split('/').pop()}
                 </div>
                 {agent.botToken && (
-                  <div 
+                  <div
                     className="text-xs mt-1 flex items-center gap-1"
                     style={{ color: '#0088cc' }}
                   >
                     <MessageSquare className="w-3 h-3" />
-                    Connected
+                    {t("Connected")}
                   </div>
                 )}
               </div>
@@ -220,27 +221,27 @@ export default function DashboardPage() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Activity Feed */}
-        <div 
+        <div
           className="lg:col-span-2 rounded-xl overflow-hidden"
           style={{
             backgroundColor: 'var(--card)',
             border: '1px solid var(--border)',
           }}
         >
-          <div 
+          <div
             className="flex items-center justify-between px-5 py-4"
             style={{ borderBottom: '1px solid var(--border)' }}
           >
             <div className="flex items-center gap-3">
               <div className="accent-line" />
-              <h2 
+              <h2
                 className="text-base font-semibold"
-                style={{ 
+                style={{
                   fontFamily: 'var(--font-heading)',
                   color: 'var(--text-primary)'
                 }}
               >
-                Recent Activity
+                {t("Recent Activity")}
               </h2>
             </div>
             <a
@@ -248,7 +249,7 @@ export default function DashboardPage() {
               className="text-sm font-medium"
               style={{ color: 'var(--accent)' }}
             >
-              View all →
+              {t("View all →")}
             </a>
           </div>
           <div className="p-0">
@@ -257,27 +258,27 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Links */}
-        <div 
+        <div
           className="rounded-xl overflow-hidden"
           style={{
             backgroundColor: 'var(--card)',
             border: '1px solid var(--border)',
           }}
         >
-          <div 
+          <div
             className="flex items-center justify-between px-5 py-4"
             style={{ borderBottom: '1px solid var(--border)' }}
           >
             <div className="flex items-center gap-3">
               <div className="accent-line" />
-              <h2 
+              <h2
                 className="text-base font-semibold"
-                style={{ 
+                style={{
                   fontFamily: 'var(--font-heading)',
                   color: 'var(--text-primary)'
                 }}
               >
-                Quick Links
+                {t("Quick Links")}
               </h2>
             </div>
           </div>
@@ -298,7 +299,7 @@ export default function DashboardPage() {
               >
                 <div className="flex items-center gap-2">
                   <Icon className="w-4 h-4" style={{ color }} />
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{label}</span>
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{t(label)}</span>
                 </div>
               </Link>
             ))}

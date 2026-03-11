@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules
 .next
 .git
@@ -13,3 +14,20 @@ data/*.db-shm
 data/*.db-wal
 data/*.json
 !data/*.example.json
+=======
+node_modules
+.next
+.git
+.env*
+!.env.example
+*.md
+docs/
+design/
+.DS_Store
+*.bak
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.json
+!data/*.example.json
+>>>>>>> b75f9b1 (fix: allow login via http by adjusting cookie security and update deployment docs)

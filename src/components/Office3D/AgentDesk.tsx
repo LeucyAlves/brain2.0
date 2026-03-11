@@ -24,36 +24,38 @@ export default function AgentDesk({ agent, state, onClick, isSelected }: AgentDe
 
   // Animación de pulsación para estado "thinking"
   useFrame((frameState) => {
-    if (monitorRef.current && state.status === 'thinking') {
+    if (monitorRef.current && state?.status === 'thinking') {
       monitorRef.current.scale.setScalar(1 + Math.sin(frameState.clock.elapsedTime * 2) * 0.05);
     }
   });
 
+  const status = state?.status || 'idle';
+
   const getStatusColor = () => {
-    switch (state.status) {
-      case 'working':
-        return '#22c55e'; // green-500
-      case 'thinking':
-        return '#3b82f6'; // blue-500
-      case 'error':
-        return '#ef4444'; // red-500
-      case 'idle':
-      default:
-        return '#6b7280'; // gray-500
+    try {
+      const s = state?.status || 'idle';
+      switch (s) {
+        case 'working': return '#22c55e';
+        case 'thinking': return '#3b82f6';
+        case 'error': return '#ef4444';
+        default: return '#6b7280';
+      }
+    } catch (e) {
+      return '#6b7280';
     }
   };
 
   const getMonitorEmissive = () => {
-    switch (state.status) {
-      case 'working':
-        return '#15803d'; // darker green
-      case 'thinking':
-        return '#1e40af'; // darker blue
-      case 'error':
-        return '#991b1b'; // darker red
-      case 'idle':
-      default:
-        return '#374151'; // darker gray
+    try {
+      const s = state?.status || 'idle';
+      switch (s) {
+        case 'working': return '#15803d';
+        case 'thinking': return '#1e40af';
+        case 'error': return '#991b1b';
+        default: return '#374151';
+      }
+    } catch (e) {
+      return '#374151';
     }
   };
 
@@ -88,7 +90,7 @@ export default function AgentDesk({ agent, state, onClick, isSelected }: AgentDe
         <meshStandardMaterial
           color={getStatusColor()}
           emissive={getMonitorEmissive()}
-          emissiveIntensity={state.status === 'idle' ? 0.1 : 0.5}
+          emissiveIntensity={status === 'idle' ? 0.1 : 0.5}
         />
       </Box>
 
@@ -144,8 +146,8 @@ export default function AgentDesk({ agent, state, onClick, isSelected }: AgentDe
         anchorX="center"
         anchorY="middle"
       >
-        {state.status.toUpperCase()}
-        {state.model && ` • ${state.model}`}
+        {status.toUpperCase()}
+        {state?.model && ` • ${state.model}`}
       </Text>
 
       {/* Desk legs */}

@@ -10,23 +10,35 @@ interface AgentPanelProps {
 }
 
 export default function AgentPanel({ agent, state, onClose }: AgentPanelProps) {
+  // Safety check
+  if (!agent || !state) {
+    return null;
+  }
   const getStatusColor = () => {
-    switch (state.status) {
-      case 'working': return 'text-green-500';
-      case 'thinking': return 'text-blue-500 animate-pulse';
-      case 'error': return 'text-red-500';
-      case 'idle':
-      default: return 'text-gray-500';
+    try {
+      const s = state?.status || 'idle';
+      switch (s) {
+        case 'working': return 'text-green-500';
+        case 'thinking': return 'text-blue-500 animate-pulse';
+        case 'error': return 'text-red-500';
+        default: return 'text-gray-500';
+      }
+    } catch (e) {
+      return 'text-gray-500';
     }
   };
 
   const getStatusBgColor = () => {
-    switch (state.status) {
-      case 'working': return 'bg-green-500/20';
-      case 'thinking': return 'bg-blue-500/20';
-      case 'error': return 'bg-red-500/20';
-      case 'idle':
-      default: return 'bg-gray-500/20';
+    try {
+      const s = state?.status || 'idle';
+      switch (s) {
+        case 'working': return 'bg-green-500/20';
+        case 'thinking': return 'bg-blue-500/20';
+        case 'error': return 'bg-red-500/20';
+        default: return 'bg-gray-500/20';
+      }
+    } catch (e) {
+      return 'bg-gray-500/20';
     }
   };
 
@@ -68,7 +80,7 @@ export default function AgentPanel({ agent, state, onClose }: AgentPanelProps) {
       {/* Stats */}
       <div className="space-y-4 mb-6">
         <h3 className="text-sm font-semibold text-gray-400">Stats</h3>
-        
+
         <div className="grid grid-cols-2 gap-4">
           {/* Model */}
           <div className="bg-white/5 p-3 rounded-lg">

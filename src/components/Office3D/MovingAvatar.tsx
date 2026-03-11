@@ -25,16 +25,16 @@ interface MovingAvatarProps {
   onPositionUpdate: (id: string, pos: Vector3) => void;
 }
 
-export default function MovingAvatar({ 
-  agent, 
-  state, 
-  officeBounds, 
-  obstacles, 
+export default function MovingAvatar({
+  agent,
+  state,
+  officeBounds,
+  obstacles,
   otherAvatarPositions,
-  onPositionUpdate 
+  onPositionUpdate
 }: MovingAvatarProps) {
   const groupRef = useRef<Group>(null);
-  
+
   // Posición inicial completamente aleatoria SIN colisiones
   const [initialPos] = useState(() => {
     let pos: Vector3;
@@ -66,7 +66,7 @@ export default function MovingAvatar({
 
   const [targetPos, setTargetPos] = useState(initialPos);
   const currentPos = useRef(initialPos.clone());
-  
+
   // Notificar posición inicial
   useEffect(() => {
     onPositionUpdate(agent.id, initialPos.clone());
@@ -138,7 +138,7 @@ export default function MovingAvatar({
     // Primer objetivo después de montar
     const timeout = setTimeout(getNewTarget, 1000);
     const interval = setInterval(getNewTarget, getInterval());
-    
+
     return () => {
       clearTimeout(timeout);
       clearInterval(interval);
@@ -185,9 +185,9 @@ export default function MovingAvatar({
       <VoxelAvatar
         agent={agent}
         position={[0, 0, 0]}
-        isWorking={state.status === 'working'}
-        isThinking={state.status === 'thinking'}
-        isError={state.status === 'error'}
+        isWorking={state?.status === 'working'}
+        isThinking={state?.status === 'thinking'}
+        isError={state?.status === 'error'}
       />
     </group>
   );

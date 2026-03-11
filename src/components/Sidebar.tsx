@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
 import {
   LayoutDashboard,
   Activity,
@@ -28,6 +29,7 @@ import {
   GitFork,
   SquareTerminal,
   History,
+  KanbanSquare,
 } from "lucide-react";
 import { getAgentDisplayName } from "@/config/branding";
 
@@ -41,6 +43,7 @@ const navItems = [
   { href: "/terminal", label: "Terminal", icon: SquareTerminal },
   { href: "/git", label: "Git", icon: GitFork },
   { href: "/workflows", label: "Workflows", icon: Workflow },
+  { href: "/tasks", label: "Task Board", icon: KanbanSquare },
   { href: "/activity", label: "Activity", icon: Activity },
   { href: "/memory", label: "Memory", icon: Brain },
   { href: "/files", label: "Files", icon: FolderOpen },
@@ -67,7 +70,7 @@ export function Sidebar() {
         setIsOpen(false);
       }
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -227,28 +230,28 @@ export function Sidebar() {
                     style={
                       !isActive
                         ? {
-                            color: "var(--text-secondary)",
-                            ...(item.highlight
-                              ? {
-                                  background:
-                                    "linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))",
-                                  borderLeft: "3px solid var(--accent)",
-                                }
-                              : {}),
-                          }
+                          color: "var(--text-secondary)",
+                          ...(item.highlight
+                            ? {
+                              background:
+                                "linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))",
+                              borderLeft: "3px solid var(--accent)",
+                            }
+                            : {}),
+                        }
                         : {
-                            backgroundColor: "var(--accent)",
-                            color: "var(--text-primary)",
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 600,
-                          }
+                          backgroundColor: "var(--accent)",
+                          color: "var(--text-primary)",
+                          fontFamily: "var(--font-heading)",
+                          fontWeight: 600,
+                        }
                     }
                   >
                     <Icon
                       className="w-5 h-5"
                       style={!isActive ? { color: "var(--text-muted)" } : undefined}
                     />
-                    {item.label}
+                    {t(item.label)}
                   </Link>
                 </li>
               );
@@ -267,28 +270,28 @@ export function Sidebar() {
             style={
               pathname !== "/settings"
                 ? {
-                    color: "var(--text-secondary)",
-                  }
+                  color: "var(--text-secondary)",
+                }
                 : {
-                    backgroundColor: "var(--accent)",
-                    color: "var(--text-primary)",
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 600,
-                  }
+                  backgroundColor: "var(--accent)",
+                  color: "var(--text-primary)",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 600,
+                }
             }
           >
             <Settings
               className="w-5 h-5"
               style={pathname !== "/settings" ? { color: "var(--text-muted)" } : undefined}
             />
-            Settings
+            {t("Settings")}
           </Link>
 
           <div
             className="px-4 py-2 text-xs"
             style={{ color: "var(--text-muted)" }}
           >
-            OpenClaw Agent
+            {t("OpenClaw Agent")}
           </div>
 
           <button
@@ -305,7 +308,7 @@ export function Sidebar() {
             }}
           >
             <LogOut className="w-4 h-4" />
-            <span className="text-sm">Cerrar sesión</span>
+            <span className="text-sm">{t("Cerrar sesión")}</span>
           </button>
         </div>
       </aside>

@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { t } from "@/lib/i18n";
 import {
   Home,
   Monitor,
@@ -15,8 +17,10 @@ import {
   DollarSign,
   Settings,
   History,
+  SquareKanban,
 } from "lucide-react";
 
+// mc-v20260308-hard-reset
 const dockItems = [
   { href: "/", label: "Dashboard", icon: Home },
   { href: "/system", label: "System Monitor", icon: Monitor },
@@ -25,6 +29,7 @@ const dockItems = [
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/office", label: "Office", icon: Building2 },
   { href: "/activity", label: "Activity", icon: Activity },
+  { href: "/tasks", label: "Tasks", icon: SquareKanban },
   { href: "/cron", label: "Cron Jobs", icon: Clock },
   { href: "/sessions", label: "Sessions", icon: History },
   { href: "/skills", label: "Skills", icon: Puzzle },
@@ -34,6 +39,15 @@ const dockItems = [
 
 export function Dock() {
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <aside
@@ -77,19 +91,9 @@ export function Dock() {
               position: "relative",
               textDecoration: "none",
             }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = "var(--surface-hover)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = "transparent";
-              }
-            }}
           >
-            {/* Icon */}
             <Icon
+              className={isActive ? "icon-active" : "icon-inactive"}
               style={{
                 width: "22px",
                 height: "22px",
@@ -98,7 +102,6 @@ export function Dock() {
               }}
             />
 
-            {/* Label */}
             <span
               style={{
                 fontFamily: "var(--font-body)",
@@ -112,10 +115,9 @@ export function Dock() {
                 maxWidth: "52px",
               }}
             >
-              {item.label.split(" ")[0]}
+              {t(item.label).split(" ")[0]}
             </span>
 
-            {/* Tooltip - shown on hover via CSS */}
             <span
               className="absolute left-[72px] top-1/2 -translate-y-1/2 px-3 py-2 rounded-lg text-sm whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50"
               style={{
@@ -126,7 +128,7 @@ export function Dock() {
                 fontWeight: 500,
               }}
             >
-              {item.label}
+              {t(item.label)}
             </span>
           </Link>
         );

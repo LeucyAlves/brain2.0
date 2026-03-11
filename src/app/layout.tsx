@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { Inter, Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-const sora = Sora({ 
+const sora = Sora({
   subsets: ["latin"],
   variable: "--font-sora",
   weight: ["400", "500", "600", "700"],
@@ -38,14 +38,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{__html:`if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js")`}} />
+        <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js")` }} />
       </head>
-      <body 
+      <body
+        suppressHydrationWarning
         className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} font-sans`}
-        style={{ 
-          backgroundColor: 'var(--background)', 
+        style={{
+          backgroundColor: 'var(--background)',
           color: 'var(--foreground)',
           fontFamily: 'var(--font-body)'
         }}
