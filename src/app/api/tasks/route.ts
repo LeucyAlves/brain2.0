@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
             priority: body.priority || 'medium',
             assigned_agent: body.assigned_agent || undefined,
             metadata: body.metadata || undefined,
+            output: body.output || undefined,
         });
 
         return NextResponse.json({ task }, { status: 201 });
@@ -95,6 +96,7 @@ export async function PATCH(request: NextRequest) {
             assigned_agent: body.assigned_agent,
             position: body.position,
             metadata: body.metadata,
+            output: body.output,
         });
 
         if (!task) {

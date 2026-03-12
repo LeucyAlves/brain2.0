@@ -23,6 +23,8 @@ export interface Task {
     updated_at: string;
     position: number;
     metadata: Record<string, unknown> | null;
+    output: string | null;
+    comments_count?: number;
 }
 
 export const TASK_STATUSES: { value: TaskStatus; label: string; emoji: string; color: string }[] = [
@@ -66,7 +68,8 @@ function getDb(): Database.Database {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       position INTEGER NOT NULL DEFAULT 0,
-      metadata TEXT
+      metadata TEXT,
+      output TEXT
     );
 
     CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
@@ -74,6 +77,28 @@ function getDb(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_tasks_agent ON tasks(assigned_agent);
     CREATE INDEX IF NOT EXISTS idx_tasks_position ON tasks(status, position);
   `);
+
+    // Migration for existing tables
+    try {
+        _db.exec('ALTER TABLE tasks ADD COLUMN output TEXT;');
+    } catch (err: any) {
+        // Ignorar erro se a coluna já existir
+        if (!err.message.includes('duplicate column name')) {
+            console.error('[tasks-db] Error applying migration (output):', err);
+        }
+    }
+
+    _db.exec(`
+    CREATE TABLE IF NOT EXISTS task_comments (
+      id TEXT PRIMARY KEY,
+      task_id TEXT NOT NULL,
+      author TEXT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_comments_task ON task_comments(task_id);
+    `);
 
     return _db;
 }
@@ -90,6 +115,8 @@ function parseRow(row: Record<string, unknown>): Task {
         updated_at: row.updated_at as string,
         position: row.position as number,
         metadata: row.metadata ? JSON.parse(row.metadata as string) : null,
+        output: row.output as string | null,
+        comments_count: typeof row.comments_count === 'number' ? row.comments_count : 0,
     };
 }
 
@@ -100,6 +127,7 @@ export interface CreateTaskData {
     priority?: TaskPriority;
     assigned_agent?: string;
     metadata?: Record<string, unknown>;
+    output?: string;
 }
 
 export function createTask(data: CreateTaskData): Task {
@@ -113,8 +141,8 @@ export function createTask(data: CreateTaskData): Task {
     ).get(data.status || 'backlog') as { max_pos: number }).max_pos;
 
     db.prepare(`
-    INSERT INTO tasks (id, title, description, status, priority, assigned_agent, created_at, updated_at, position, metadata)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO tasks (id, title, description, status, priority, assigned_agent, created_at, updated_at, position, metadata, output)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
         id,
         data.title,
@@ -126,6 +154,7 @@ export function createTask(data: CreateTaskData): Task {
         now,
         maxPos + 1,
         data.metadata ? JSON.stringify(data.metadata) : null,
+        data.output || null
     );
 
     return {
@@ -139,6 +168,7 @@ export function createTask(data: CreateTaskData): Task {
         updated_at: now,
         position: maxPos + 1,
         metadata: data.metadata || null,
+        output: data.output || null,
     };
 }
 
@@ -150,6 +180,7 @@ export interface UpdateTaskData {
     assigned_agent?: string | null;
     position?: number;
     metadata?: Record<string, unknown> | null;
+    output?: string | null;
 }
 
 export function updateTask(id: string, data: UpdateTaskData): Task | null {
@@ -198,6 +229,10 @@ export function updateTask(id: string, data: UpdateTaskData): Task | null {
         updates.push('metadata = ?');
         params.push(data.metadata ? JSON.stringify(data.metadata) : null);
     }
+    if (data.output !== undefined) {
+        updates.push('output = ?');
+        params.push(data.output);
+    }
 
     params.push(id);
     db.prepare(`UPDATE tasks SET ${updates.join(', ')} WHERE id = ?`).run(...params);
@@ -225,21 +260,21 @@ export function getTasks(opts: GetTasksOptions = {}): Task[] {
     const params: unknown[] = [];
 
     if (opts.status) {
-        conditions.push('status = ?');
+        conditions.push('t.status = ?');
         params.push(opts.status);
     }
     if (opts.priority) {
-        conditions.push('priority = ?');
+        conditions.push('t.priority = ?');
         params.push(opts.priority);
     }
     if (opts.assigned_agent) {
-        conditions.push('assigned_agent = ?');
+        conditions.push('t.assigned_agent = ?');
         params.push(opts.assigned_agent);
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const rows = db.prepare(
-        `SELECT * FROM tasks ${where} ORDER BY status, position ASC, created_at ASC`
+        `SELECT t.*, (SELECT COUNT(*) FROM task_comments c WHERE c.task_id = t.id) as comments_count FROM tasks t ${where} ORDER BY t.status, t.position ASC, t.created_at ASC`
     ).all(...params) as Record<string, unknown>[];
 
     return rows.map(parseRow);

@@ -15,6 +15,8 @@ interface Task {
     created_at: string;
     updated_at: string;
     position: number;
+    output?: string | null;
+    comments_count?: number;
 }
 
 interface Agent {

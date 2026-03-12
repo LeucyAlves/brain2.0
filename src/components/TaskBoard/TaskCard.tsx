@@ -1,7 +1,7 @@
 "use client";
 
 import { t } from "@/lib/i18n";
-import { GripVertical } from "lucide-react";
+import { GripVertical, FileText, MessageSquare } from "lucide-react";
 
 interface TaskCardProps {
     task: {
@@ -11,6 +11,8 @@ interface TaskCardProps {
         priority: string;
         assigned_agent: string | null;
         created_at: string;
+        output?: string | null;
+        comments_count?: number;
     };
     agents: Array<{ id: string; name: string; emoji: string; color: string }>;
     onEdit: (taskId: string) => void;
@@ -153,6 +155,21 @@ export function TaskCard({ task, agents, onEdit, onDragStart }: TaskCardProps) {
                     >
                         {agent.emoji} {agent.name}
                     </span>
+                )}
+
+                {/* Indicators */}
+                {(task.output || (task.comments_count && task.comments_count > 0)) && (
+                    <div style={{ display: "flex", gap: "6px", alignItems: "center", marginLeft: "4px" }}>
+                        {task.output && (
+                            <FileText style={{ width: "12px", height: "12px", color: "var(--text-muted)" }} />
+                        )}
+                        {task.comments_count && task.comments_count > 0 && (
+                            <div style={{ display: "flex", alignItems: "center", gap: "2px", color: "var(--text-muted)" }}>
+                                <MessageSquare style={{ width: "12px", height: "12px" }} />
+                                <span style={{ fontSize: "10px", fontWeight: 600 }}>{task.comments_count}</span>
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {/* Spacer */}
